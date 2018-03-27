@@ -7,6 +7,9 @@ name = "pypi"
 
 [packages]
 falcon = "*"
+waitress = "*"
+requests = "*"
+msgpack-python = "*"
 
 [requires]
 python_version = "2.7"

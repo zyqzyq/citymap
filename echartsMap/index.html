@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EDGE">
+    <title>ECharts</title>
+    <!--<link rel="stylesheet" type="text/css" href="css/main.css"/>-->
+    <script src="map/js/jquery-3.3.1.min.js"></script>
+    <script src="dep/echarts.min.js"></script>
+    <script src="map/js/china.js"></script>
+    <style>#china-map {width:1000px; height: 1000px;margin: auto;}</style>
+</head>
+<body>
+
+<div id="china-map"></div>
+
+<script>
+    var myChart = echarts.init(document.getElementById('china-map'));
+    var option = {
+        series: [{
+            type: 'map',
+            mapType: 'china',
+        }
+        ],
+    };
+    myChart.setOption(option);
+    myChart.on('mouseover', function (params) {
+        var dataIndex = params.dataIndex;
+        console.log(params);
+    });
+</script>
+
+<script>
+    var myChart = echarts.init(document.getElementById('china-map'));
+    var myData = [
+
+        {name: '海门', value: [121.15, 31.89, 90]},
+//        {name: '鄂尔多斯', value: [109.781327, 39.608266, 120]},
+//        {name: '招远', value: [120.38, 37.35, 142]},
+//        {name: '舟山', value: [122.207216, 29.985295, 123]}
+    ];
+//    alert(myData)
+    //页面加载   获取全部信息
+    $(function() {
+        $.ajax({
+            type: "get",
+            url: "http://localhost:8000/city",
+            dataType: "text",
+            success: function(data) {
+//                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
+                var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
+//                alert(d)
+                var arr= d.city
+                for (var i = 0; i < arr.length; i++){
+                    myData.push(arr[i])
+                }
+                myChart.setOption(option);
+            }
+        })
+    });
+
+    var option = {
+        geo: {
+            map: 'china'
+        },
+//        backgroundColor: '#404a59',  		// 图表背景色
+        tooltip: {
+//                    show: false //不显示提示标签
+            formatter: '{b}', //提示标签格式
+            backgroundColor:"#ff7f50",//提示标签背景颜色
+            textStyle:{color:"#fff"} //提示标签字体颜色
+        },
+        series: [{
+            type: 'scatter',
+            coordinateSystem: 'geo',
+            data:myData
+        }
+        ],
+    };
+    myChart.setOption(option);
+</script>
+
+</body>
+</html>
