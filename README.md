@@ -15,6 +15,13 @@ Falcon： https://falconframework.org/
 - [ ] -  邮差问题
 
 # 计划
+使用mysql redis存储数据
 使用falcon 读取数据
 使用js 页面展示
-使用mysql redis存储数据
+
+
+# ERROR
+no Access-Control-Allow-Origin：准备用nginx add header处理
+
+# 进度
+初步实现显示城市，准备显示所有城市数据。
