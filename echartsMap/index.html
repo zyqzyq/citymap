@@ -33,8 +33,7 @@
 <script>
     var myChart = echarts.init(document.getElementById('china-map'));
     var myData = [
-
-        {name: '海门', value: [121.15, 31.89, 90]},
+//        {name: '海门', value: [121.15, 31.89, 90]},
 //        {name: '鄂尔多斯', value: [109.781327, 39.608266, 120]},
 //        {name: '招远', value: [120.38, 37.35, 142]},
 //        {name: '舟山', value: [122.207216, 29.985295, 123]}
@@ -49,9 +48,10 @@
             success: function(data) {
 //                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
                 var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
-//                alert(d)
+//                alert(data)
                 var arr= d.city
                 for (var i = 0; i < arr.length; i++){
+//                    alert(data[i].name)
                     myData.push(arr[i])
                 }
                 myChart.setOption(option);

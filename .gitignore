@@ -1,2 +1,7 @@
 .idea/
-echartsMap/idea/
+echartsMap/.idea/
+echartsMap/data.json
+data/citydata.txt
+data/citylist.txt
+data/readexcel.py
+data/readtxt.py

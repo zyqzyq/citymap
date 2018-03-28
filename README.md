@@ -8,6 +8,11 @@ Falcon： https://falconframework.org/
 - 给予一个具体的经纬度点，在地图上构建该点到离该点最近的3个城市的最短路径
 - 给予两个经纬度的点（起点和终点），在地图上构建起点到终点的最短路径（即起点通向终点依次穿过地图上的城市，最终连接所有点形成一条路径，要求路径最短，且给出最短路径距离多少Km）
 
+# 进度
+实现falcon mysql读取数据
+实现html显示地图与所有二级城市
+![default](https://raw.githubusercontent.com/zyqzyq/citymap/master/screenshots/1.png)
+
 
 # TODO：
 - [ ] -  使用eCharts显示地图
@@ -15,13 +20,6 @@ Falcon： https://falconframework.org/
 - [ ] -  邮差问题
 
 # 计划
-使用mysql redis存储数据
-使用falcon 读取数据
-使用js 页面展示
+增加 redis加快数据读取速度
+增加 ajax 后台交互实现计算到点最近的城市功能
 
-
-# ERROR
-no Access-Control-Allow-Origin：准备用nginx add header处理
-
-# 进度
-初步实现显示城市，准备显示所有城市数据。

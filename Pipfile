@@ -10,6 +10,9 @@ falcon = "*"
 waitress = "*"
 requests = "*"
 msgpack-python = "*"
+xlrd = "*"
+wheel = "*"
+redis = "*"
 
 [requires]
 python_version = "2.7"
