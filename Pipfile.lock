@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "ff473b9799c375145f3c5293e74e244b07502d86f775b0245c639578de3f532d"
+            "sha256": "de33989af3e14fe96f44cc99d082595372cb2ebc4e46ce0016a7d25176cc486e"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -30,6 +30,14 @@
             ],
             "version": "==3.0.4"
         },
+        "docutils": {
+            "hashes": [
+                "sha256:02aec4bd92ab067f6ff27a38a38a41173bf01bed8f89157768c1573f53e474a6",
+                "sha256:51e64ef2ebfb29cae1faa133b3710143496eca21c530f3f71424d77687764274",
+                "sha256:7a4bd47eaf6596e1295ecb11361139febe29b084a87bf005bf899f9a42edc3c6"
+            ],
+            "version": "==0.14"
+        },
         "falcon": {
             "hashes": [
                 "sha256:0a66b33458fab9c1e400a9be1a68056abda178eb02a8cb4b8f795e9df20b053b",
@@ -37,6 +45,13 @@
             ],
             "index": "pypi",
             "version": "==1.4.1"
+        },
+        "geohash": {
+            "hashes": [
+                "sha256:2dd849ebaa0bc7ee565444df4fc57ae33daa89afa24b43617556560a04b71900"
+            ],
+            "index": "pypi",
+            "version": "==1.0"
         },
         "idna": {
             "hashes": [

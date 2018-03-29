@@ -5,4 +5,7 @@ data/citydata.txt
 data/citylist.txt
 data/readexcel.py
 data/readtxt.py
+data/testpost.py
+data/testgeohash.py
+data/caldistance.py
 *.pyc

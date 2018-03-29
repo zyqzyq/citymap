@@ -8,12 +8,40 @@
     <script src="map/js/jquery-3.3.1.min.js"></script>
     <script src="dep/echarts.min.js"></script>
     <script src="map/js/china.js"></script>
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- 可选的 Bootstrap 主题文件（一般不用引入） -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     <style>#china-map {width:1000px; height: 1000px;margin: auto;}</style>
 </head>
 <body>
-
-<div id="china-map"></div>
-
+<div class="container">
+    <div class="row">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+            <br>
+            <p>请在此输入经纬度查询距离最近的3个城市</p>
+            <form>
+                东经:<br>
+                <input id="east" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <p>范围 4~53E</p>
+                <br>
+                北纬:<br>
+                <input id="north" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <p>范围 73~135N</p>
+                <br><br>
+                <input type="button" value="查找" onclick="searchCity()">
+            </form>
+            <br><br>
+            <p>请在此输入起点和终点城市</p>
+            <button>test</button>
+        </div>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10" id="china-map" style="width:900px;height: 600px"></div>
+    </div>
+</div>
 <script>
     var myChart = echarts.init(document.getElementById('china-map'));
     var option = {
@@ -45,7 +73,7 @@
             type: "get",
             url: page_url,
             dataType: "text",
-            async:true,
+            async:false,
             success: function(data) {
 //                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
                 var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
@@ -87,5 +115,39 @@
     myChart.setOption(option);
 </script>
 
+<script type="text/javascript">
+    function searchCity(){
+        var eastdata = document.getElementById("east");
+        var northdata = document.getElementById("north");
+//        alert(eastdata.value+northdata.value);
+        if (check(eastdata.value,northdata.value))
+            get_nearby_city_list(eastdata.value,northdata.value);
+        else
+            alert("经纬度超出范围，请输入东经4~53度，北纬73~135度的参数。");
+    }
+</script>
+
+<script>
+    function get_nearby_city_list(eastdata, northdata) {
+        $.ajax({
+            type: "post",
+            url: "http://localhost:8000/city/"+eastdata+"/"+northdata,
+            dataType: "text",
+            success: function(data) {
+//                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
+                var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
+                var arr= d.city_list;
+                alert("最近的三座城市为：" + arr)
+            }
+        })
+    }
+    function check(eastdata,northdata)
+    {
+        if((4 < parseInt(eastdata) && parseInt(eastdata)  < 53 && 73 <  parseInt(northdata) && parseInt(northdata) < 135))
+            return true;
+        else
+            return false;
+    }
+</script>
 </body>
 </html>
