@@ -5,3 +5,4 @@ data/citydata.txt
 data/citylist.txt
 data/readexcel.py
 data/readtxt.py
+*.pyc

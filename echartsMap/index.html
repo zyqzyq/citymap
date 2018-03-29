@@ -40,23 +40,30 @@
     ];
 //    alert(myData)
     //页面加载   获取全部信息
-    $(function() {
+    function get_city_list(page_url) {
         $.ajax({
             type: "get",
-            url: "http://localhost:8000/city",
+            url: page_url,
             dataType: "text",
+            async:true,
             success: function(data) {
 //                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
                 var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
-//                alert(data)
                 var arr= d.city
                 for (var i = 0; i < arr.length; i++){
 //                    alert(data[i].name)
                     myData.push(arr[i])
                 }
                 myChart.setOption(option);
+                var next_page_url = d.next_page_url
+                if (next_page_url!==null){
+                    get_city_list(next_page_url)
+                }
             }
         })
+    }
+    $(function() {
+        get_city_list("http://localhost:8000/city")
     });
 
     var option = {

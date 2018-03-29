@@ -4,6 +4,7 @@
 import MySQLdb
 import redis
 
+
 def create_table():
     # 打开数据库连接
     db = MySQLdb.connect("localhost", "root", "root", "citydb")
@@ -59,6 +60,7 @@ def insert_data():
     # 关闭数据库连接
     db.close()
 
+
 def search_all():
     # 打开数据库连接
     data_json = {"city": []}
@@ -75,7 +77,7 @@ def search_all():
         # 提交到数据库执行
         results = cursor.fetchall()
         for result in results:
-            data = [result[1],[result[2],result[3]]]
+            data = [result[1], [result[2], result[3]]]
             data_json["city"].append(data)
         # print data_json
     except:
@@ -86,19 +88,31 @@ def search_all():
     db.close()
     return data_json
 
-def test_redis(data):
-    pool = redis.ConnectionPool(host='127.0.0.1',password="123456", port=6379)
-    r = redis.Redis(connection_pool=pool)
-    for i in data["city"]:
-        print i
-        print i[0],i[1]
-        r.set(i[0].encode('utf-8'),i[1])
 
+def test_redis(data):
+    pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
+
+    r = redis.Redis(connection_pool=pool)
+    keys = r.keys()
+    r.delete(*keys)
+    for i in data["city"]:
+        r.hset(name=i[0], key="1", value=i[1][0])
+        r.hset(name=i[0], key="2", value=i[1][1])
+    city_list = []
+    keys = r.keys()
+    print type(keys)
+    print keys
+    for key in keys:
+        value = r.hgetall(key)
+        city_list.append({"name": key, "value": [float(value["1"]), float(value["2"])]})
+    print city_list
+    keys = r.keys()
+    r.delete(*keys)
 
 
 if __name__ == '__main__':
-    # create_table()  # 新建表格
-    # insert_data()     # 插入数据
+    create_table()  # 新建表格
+    insert_data()     # 插入数据
     data = search_all()
     # print data
-    # test_redis(data)
+    test_redis(data)
