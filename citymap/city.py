@@ -66,9 +66,9 @@ class CityResource(object):
         nearby_city_list = []
         print east_longitude, north_latitude
         east_longitude, north_latitude = float(east_longitude), float(north_latitude)
-        if 4 < east_longitude < 53 and 73 < north_latitude < 135:
+        if 4 < north_latitude < 53 and 73 < east_longitude < 135:
             rec = 0
-            nearby_city_list = self.search_nearby_city(north_latitude, east_longitude)
+            nearby_city_list = self.search_nearby_city(east_longitude,north_latitude)
 
         dict_data = {
             "rec": rec,

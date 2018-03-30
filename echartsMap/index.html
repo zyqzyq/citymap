@@ -25,13 +25,13 @@
             <br>
             <p>请在此输入经纬度查询距离最近的3个城市</p>
             <form>
-                东经:<br>
-                <input id="east" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
-                <p>范围 4~53E</p>
-                <br>
                 北纬:<br>
                 <input id="north" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
-                <p>范围 73~135N</p>
+                <p>范围 4~53N</p>
+                <br>
+                东经:<br>
+                <input id="east" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <p>范围 73~135E</p>
                 <br><br>
                 <input type="button" value="查找" onclick="searchCity()">
             </form>
@@ -123,7 +123,7 @@
         if (check(eastdata.value,northdata.value))
             get_nearby_city_list(eastdata.value,northdata.value);
         else
-            alert("经纬度超出范围，请输入东经4~53度，北纬73~135度的参数。");
+            alert("经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。");
     }
 </script>
 
@@ -143,7 +143,7 @@
     }
     function check(eastdata,northdata)
     {
-        if((4 < parseInt(eastdata) && parseInt(eastdata)  < 53 && 73 <  parseInt(northdata) && parseInt(northdata) < 135))
+        if((4 < parseInt(northdata) && parseInt(northdata)  < 53 && 73 <  parseInt(eastdata) && parseInt(eastdata) < 135))
             return true;
         else
             return false;
