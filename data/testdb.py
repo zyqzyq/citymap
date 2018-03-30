@@ -171,10 +171,10 @@ def geo_distance(lng1, lat1, lng2, lat2):
 
 
 if __name__ == '__main__':
-    # create_table()  # 新建表格
-    # insert_data()     # 插入数据
-    data = search_all()
+    create_table()  # 新建表格
+    insert_data()     # 插入数据
+    # data = search_all()
     # print data
-    test_redis(data)
+    # test_redis(data)
     # search_geohash()
     # search_nearby_city(116.28, 31.44)

@@ -112,6 +112,8 @@ class CityResource(object):
                 self.conn.hset(name=result[1], key="north", value=result[3])
                 self.conn.hset(name=result[1], key="id", value=i)
                 for j, other_result in enumerate(results):
+                    # if i == j :
+                        # print "dist:",geo_distance(result[2], result[3], other_result[2], other_result[3])
                     self.conn.hset(name=result[1], key=str(j),
                                    value=geo_distance(result[2], result[3], other_result[2], other_result[3]))
                 # self.conn.set(result[1], [result[2], result[3]])
@@ -207,7 +209,6 @@ class TSPResource(object):
         print start_east, start_north, end_east, end_north
         self.S = []
         self.sum = 0
-        self.n = 999
         if is_checked(start_east, start_north) and is_checked(end_east, end_north):
             nearest_city_name = self.search_nearest_city(start_east, start_north)
             self.get_shortest_path(nearest_city_name, start_east, start_north, end_east, end_north)
@@ -217,11 +218,18 @@ class TSPResource(object):
     def init_matrix(self):
         keys = self.conn.keys()
         self.n = len(keys)
+        # count_o = 0
         self.matrix = [[0 for i in range(self.n)] for i in range(self.n)]
         for i, key in enumerate(keys):
             value = self.conn.hgetall(key)
             for j in range(self.n):
-                self.matrix[i][j] = float(value[str(j)])
+                # if float(value[str(j)])==0:
+                #     print "chushihua:",i,j,value["id"]
+                #     if i == j:
+                #         count_o+=1
+                old_i = int(value["id"])
+                self.matrix[old_i][j] = float(value[str(j)])
+        # print count_o
         self.matrix = np.array(self.matrix)
 
     def search_geohash(self, east_longitude, north_latitude, bits=6):
@@ -273,15 +281,17 @@ class TSPResource(object):
         value = self.conn.hgetall(city_name)
         self.sum += geo_distance(start_east, start_north, float(value["east"]), float(value["north"]))
         city_id = int(value["id"])
-        print city_id,city_name
+        # print city_id,city_name
         self.S.append(city_id)
         new_city_id = self.get_shortest_city(city_id)
-        while new_city_id:
-            # print city_id, new_city_id
+        # new_city_id = 0
+        while new_city_id is not None:
+            print len(self.S)
             self.sum += self.matrix[city_id][new_city_id]
             self.S.append(new_city_id)
             city_id = new_city_id
             new_city_id = self.get_shortest_city(city_id)
+            print city_id, new_city_id
 
         print len(self.S)
         print self.sum
@@ -290,7 +300,8 @@ class TSPResource(object):
         min_dist = 999999
         next_city_id = None
         for i in range(self.n):
-            if (self.matrix[i][city_id] < min_dist) & (i not in self.S):
+            # print min_dist,i
+            if self.matrix[i][city_id] < min_dist and (i not in self.S):
                 min_dist = self.matrix[i][city_id]
                 next_city_id = i
         return next_city_id
