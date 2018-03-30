@@ -17,9 +17,6 @@ class CityResource(object):
     def __init__(self):
         self.pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
         self.conn = redis.Redis(connection_pool=self.pool)
-        self.city_list = []
-        self.count = 0
-        self.next_page_url = None
         self.init_redis()
 
     def process_response(self, req, resp, resource, req_succeeded):
@@ -50,52 +47,35 @@ class CityResource(object):
         resp.set_header('Access-Control-Allow-Origin', '*')  # 避免跨域问题
         page = req.get_param_as_int("page") or 1
         num = req.get_param_as_int("num") or 20
-        self.get_data(page, num)
+        city_list, count, next_page_url = self.get_data(page, num)
         # print len(self.data["city"])
         dict_data = {
-            "city": self.city_list,
-            "count": self.count,
-            "next_page_url": self.next_page_url,
+            "city": city_list,
+            "count": count,
+            "next_page_url": next_page_url,
         }
         resp.data = json.dumps(dict_data)
         resp.status = falcon.HTTP_200
 
-    def on_post(self, req, resp, east_longitude, north_latitude):
-        resp.set_header('Access-Control-Allow-Origin', '*')  # 避免跨域问题
-        rec = 4
-        nearby_city_list = []
-        print east_longitude, north_latitude
-        east_longitude, north_latitude = float(east_longitude), float(north_latitude)
-        if 4 < north_latitude < 53 and 73 < east_longitude < 135:
-            rec = 0
-            nearby_city_list = self.search_nearby_city(east_longitude,north_latitude)
-
-        dict_data = {
-            "rec": rec,
-            "city_list": nearby_city_list,
-        }
-        resp.data = json.dumps(dict_data)
-        resp.status = falcon.HTTP_201
-        resp.location = "/city/{}/{}".format(east_longitude, north_latitude)
-
     def get_data(self, page, num):
-        self.city_list = []
+        city_list = []
         keys = self.conn.keys()
         if page * num < len(keys):
-            self.count = num
-            self.next_page_url = "http://localhost:8000/city?page={}&num={}".format(page + 1, num)
+            count = num
+            next_page_url = "http://localhost:8000/city?page={}&num={}".format(page + 1, num)
             for key in keys[(page - 1) * num:page * num]:
                 value = self.conn.hgetall(key)
-                self.city_list.append({"name": key, "value": [float(value["1"]), float(value["2"])]})
+                city_list.append({"name": key, "value": [float(value["1"]), float(value["2"])]})
         elif (page - 1) * num < len(keys) < page * num:
-            self.count = page * num - len(keys)
-            self.next_page_url = None
+            count = page * num - len(keys)
+            next_page_url = None
             for key in keys[(page - 1) * num:]:
                 value = self.conn.hgetall(key)
-                self.city_list.append({"name": key, "value": [float(value["1"]), float(value["2"])]})
+                city_list.append({"name": key, "value": [float(value["1"]), float(value["2"])]})
         else:
-            self.count = None
-            self.next_page_url = None
+            count = None
+            next_page_url = None
+        return city_list, count, next_page_url
 
     def init_redis(self):
         # 打开数据库连接
@@ -120,6 +100,29 @@ class CityResource(object):
             print  "Error: unable to fecth data"
         # 关闭数据库连接
         db.close()
+
+
+class SearchResource(object):
+
+    def on_get(self, req, resp, east_longitude, north_latitude):
+        # print req, resp, east_longitude, north_latitude
+        resp.set_header('Access-Control-Allow-Origin', '*')  # 避免跨域问题
+        rec = 4
+        info = None
+        nearby_city_list = []
+        east_longitude, north_latitude = float(east_longitude), float(north_latitude)
+        if 4 < north_latitude < 53 and 73 < east_longitude < 135:
+            rec = 0
+            nearby_city_list = self.search_nearby_city(east_longitude, north_latitude)
+        else:
+            info = "error: 经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。"
+        dict_data = {
+            "rec": rec,
+            "city_list": nearby_city_list,
+            "info": info,
+        }
+        resp.data = json.dumps(dict_data)
+        resp.status = falcon.HTTP_200
 
     def search_geohash(self, east_longitude, north_latitude, bits=6):
         # 打开数据库连接

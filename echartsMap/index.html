@@ -130,8 +130,8 @@
 <script>
     function get_nearby_city_list(eastdata, northdata) {
         $.ajax({
-            type: "post",
-            url: "http://localhost:8000/city/"+eastdata+"/"+northdata,
+            type: "get",
+            url: "http://localhost:8000/search/"+eastdata+"/"+northdata,
             dataType: "text",
             success: function(data) {
 //                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
