@@ -26,18 +26,24 @@
             <p>请在此输入经纬度查询距离最近的3个城市</p>
             <form>
                 北纬:<br>
-                <input id="north" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <input id="north"  onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
                 <p>范围 4~53N</p>
-                <br>
                 东经:<br>
                 <input id="east" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
                 <p>范围 73~135E</p>
-                <br><br>
                 <input type="button" value="查找" onclick="searchCity()">
             </form>
             <br><br>
-            <p>请在此输入起点和终点城市</p>
-            <button>test</button>
+            <p>请在此输入起点和终点城市的经纬度计算最短路径</p>
+            <form>
+                起点城市:<br>
+                <input id="start_north"  size="6" placeholder="范围 4~53N" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <input id="start_east"  size="6"  placeholder="范围 73~135E" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                终点城市:<br>
+                <input id="end_north"  size="6"  placeholder="范围 4~53N" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <input id="end_east"  size="6"  placeholder="范围 73~135E" onkeyup="if(isNaN(value))execCommand('undo')" onafterpaste="if(isNaN(value))execCommand('undo')">
+                <input type="button" value="计算" onclick="calDistance()">
+            </form>
         </div>
         <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10" id="china-map" style="width:900px;height: 600px"></div>
     </div>
@@ -126,7 +132,33 @@
             alert("经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。");
     }
 </script>
+<script>
+    function calDistance() {
+        var start_east_data = document.getElementById("start_east").value;
+        var start_north_data = document.getElementById("start_north").value;
+        var end_east_data = document.getElementById("end_east").value;
+        var end_north_data = document.getElementById("end_north").value;
+        if(check(start_east_data,start_north_data) && check(end_east_data,end_north_data))
+            get_shortest_distance(start_east_data, start_north_data, end_east_data, end_north_data);
+        else
+            alert("经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。");
+    }
 
+    function get_shortest_distance(start_east_data, start_north_data, end_east_data, end_north_data) {
+        $.ajax({
+            type: "get",
+            url: "http://localhost:8000/tsp/"+
+            start_east_data+"/"+start_north_data+"/"+end_east_data+"/"+end_north_data,
+            dataType: "text",
+            success: function(data) {
+//                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
+                var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
+                alert("最短路径为：" + d.total_length)
+
+            }
+        })
+    }
+</script>
 <script>
     function get_nearby_city_list(eastdata, northdata) {
         $.ajax({

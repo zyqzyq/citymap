@@ -113,7 +113,7 @@ class CityResource(object):
                 self.conn.hset(name=result[1], key="id", value=i)
                 for j, other_result in enumerate(results):
                     # if i == j :
-                        # print "dist:",geo_distance(result[2], result[3], other_result[2], other_result[3])
+                    # print "dist:",geo_distance(result[2], result[3], other_result[2], other_result[3])
                     self.conn.hset(name=result[1], key=str(j),
                                    value=geo_distance(result[2], result[3], other_result[2], other_result[3]))
                 # self.conn.set(result[1], [result[2], result[3]])
@@ -204,16 +204,28 @@ class TSPResource(object):
         self.init_matrix()
 
     def on_get(self, req, resp, start_east, start_north, end_east, end_north):
+        resp.set_header('Access-Control-Allow-Origin', '*')
         start_east, start_north, end_east, end_north = float(start_east), float(start_north), float(end_east), float(
             end_north)
-        print start_east, start_north, end_east, end_north
+        # print start_east, start_north, end_east, end_north
         self.S = []
         self.sum = 0
+        rec = 4
+        info = None
+        total_length = None
         if is_checked(start_east, start_north) and is_checked(end_east, end_north):
+            rec = 0
             nearest_city_name = self.search_nearest_city(start_east, start_north)
-            self.get_shortest_path(nearest_city_name, start_east, start_north, end_east, end_north)
+            total_length = self.get_shortest_path(nearest_city_name, start_east, start_north, end_east, end_north)
         else:
-            print "failed"
+            info = "error: 经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。"
+        dict_data = {
+            "rec": rec,
+            "total_length": round(total_length,2),
+            "info": info,
+        }
+        resp.data = json.dumps(dict_data)
+        resp.status = falcon.HTTP_200
 
     def init_matrix(self):
         keys = self.conn.keys()
@@ -281,20 +293,21 @@ class TSPResource(object):
         value = self.conn.hgetall(city_name)
         self.sum += geo_distance(start_east, start_north, float(value["east"]), float(value["north"]))
         city_id = int(value["id"])
-        # print city_id,city_name
+        # print "first city id:", city_id
         self.S.append(city_id)
         new_city_id = self.get_shortest_city(city_id)
         # new_city_id = 0
         while new_city_id is not None:
-            print len(self.S)
+            # print len(self.S)
             self.sum += self.matrix[city_id][new_city_id]
             self.S.append(new_city_id)
             city_id = new_city_id
             new_city_id = self.get_shortest_city(city_id)
-            print city_id, new_city_id
-
-        print len(self.S)
-        print self.sum
+            # print city_id, new_city_id
+        last_city_name = self.get_city_name(city_id)
+        value = self.conn.hgetall(last_city_name)
+        self.sum += geo_distance(end_east, end_north, float(value["east"]), float(value["north"]))
+        return self.sum
 
     def get_shortest_city(self, city_id):
         min_dist = 999999
@@ -305,3 +318,10 @@ class TSPResource(object):
                 min_dist = self.matrix[i][city_id]
                 next_city_id = i
         return next_city_id
+
+    def get_city_name(self, city_id):
+        keys = self.conn.keys()
+        for key in keys:
+            value = self.conn.hgetall(key)
+            if int(value['id']) == city_id:
+                return key

@@ -11,6 +11,7 @@ Falcon： https://falconframework.org/
 # 进度
     实现falcon mysql redis存储数据
     实现html显示地图与所有二级城市
+    实现找寻确定点的最近的3个城市
     
 ![](https://raw.githubusercontent.com/zyqzyq/citymap/master/screenshots/1.png)
     实现根据经纬度查询最近的3座城市
@@ -19,12 +20,13 @@ Falcon： https://falconframework.org/
 ![](https://raw.githubusercontent.com/zyqzyq/citymap/master/screenshots/3.png)
 
 
-# TODO：
+# 计划：
 - [x] -  使用eCharts显示地图
 - [x] -  计算点与点之间最短路径
-- [ ] -  邮差问题
+- [x] -  邮差问题问题
 
-# 计划
-增加计算最短路径功能
+# TODO
 增加测试模块
+
+
 
