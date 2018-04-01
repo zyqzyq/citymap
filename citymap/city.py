@@ -23,8 +23,10 @@ def geo_distance(lng1, lat1, lng2, lat2):
 
 
 def is_checked(lng, lat):
-    if 73 < lng < 135 and 4 < lat < 53:
-        return True
+    if lng.isdigit() and lat.isdigit():
+        lng, lat = float(lng), float(lat)
+        if 73 < lng < 135 and 4 < lat < 53:
+            return True
     else:
         return False
 
@@ -52,7 +54,7 @@ class CityResource(object):
     def get_data(self, page, num):
         city_list = []
         keys = self.conn.keys()
-        if page * num < len(keys):
+        if 0 < page * num < len(keys):
             count = num
             next_page_url = "http://localhost:8000/city?page={}&num={}".format(page + 1, num)
             for key in keys[(page - 1) * num:page * num]:
@@ -73,14 +75,15 @@ class CityResource(object):
 class SearchResource(object):
 
     def on_get(self, req, resp, east_longitude, north_latitude):
-        print req, resp, east_longitude, north_latitude
+        # print req, resp, east_longitude, north_latitude
         resp.set_header('Access-Control-Allow-Origin', '*')  # 避免跨域问题
         rec = 4
         info = None
         nearby_city_list = []
-        east_longitude, north_latitude = float(east_longitude), float(north_latitude)
+        # east_longitude, north_latitude = float(east_longitude), float(north_latitude)
         if is_checked(east_longitude, north_latitude):
             rec = 0
+            east_longitude, north_latitude = float(east_longitude), float(north_latitude)
             nearby_city_list = self.search_nearby_city(east_longitude, north_latitude)
         else:
             info = "error: 经纬度超出范围，请输入北纬4~53度，东经73~135度的参数。"
@@ -149,16 +152,18 @@ class TSPResource(object):
 
     def on_get(self, req, resp, start_east, start_north, end_east, end_north):
         resp.set_header('Access-Control-Allow-Origin', '*')
-        start_east, start_north, end_east, end_north = float(start_east), float(start_north), float(end_east), float(
-            end_north)
+        # start_east, start_north, end_east, end_north = float(start_east), float(start_north), float(end_east), float(
+        #     end_north)
         # print start_east, start_north, end_east, end_north
         self.S = []
         self.sum = 0
         rec = 4
         info = None
-        total_length = None
+        total_length = 0
         if is_checked(start_east, start_north) and is_checked(end_east, end_north):
             rec = 0
+            start_east, start_north, end_east, end_north = float(start_east), float(start_north), float(end_east), float(
+                end_north)
             nearest_city_name = self.search_nearest_city(start_east, start_north)
             total_length = self.get_shortest_path(nearest_city_name, start_east, start_north, end_east, end_north)
         else:

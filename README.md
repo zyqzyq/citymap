@@ -8,6 +8,11 @@
 
 [思路及代码片段](https://github.com/zyqzyq/citymap/blob/master/snippet.md)
 
+# 计划：
+- [x] -  使用eCharts显示地图
+- [x] -  计算点与点之间最短路径
+- [x] -  邮差问题
+
 # 进度
     实现falcon mysql redis存储数据
     实现html显示地图与所有二级城市
@@ -22,13 +27,8 @@
 ![](https://raw.githubusercontent.com/zyqzyq/citymap/master/screenshots/3.png)
 
 
-# 计划：
-- [x] -  使用eCharts显示地图
-- [x] -  计算点与点之间最短路径
-- [x] -  邮差问题问题
 
-# TODO
-增加测试模块
+
 
 
 
