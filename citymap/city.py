@@ -21,9 +21,21 @@ def geo_distance(lng1, lat1, lng2, lat2):
     dis = 2 * asin(sqrt(a)) * 6371
     return dis
 
+def is_float(value):
+    if value.count(".") == 1:
+        new_value = value.split(".")
+        if new_value[0].isdigit() and new_value [1].isdigit():
+            return True
+        else:
+            return False
+    elif value.isdigit():
+        return True
+    else:
+        return False
+
 
 def is_checked(lng, lat):
-    if lng.isdigit() and lat.isdigit():
+    if is_float(lat) and is_float(lng):
         lng, lat = float(lng), float(lat)
         if 73 < lng < 135 and 4 < lat < 53:
             return True

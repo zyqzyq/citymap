@@ -45,6 +45,11 @@ def test_search_nearby_city(client):
     assert response.content == json.dumps(doc)
     assert response.status == falcon.HTTP_200
 
+def test_search_nearby_with_point(client):
+    response = client.simulate_get('/search/77.66/33.99')
+    doc = {"info": None, "rec": 0, "city_list": ["和田","喀什","日喀则"]}
+    assert response.content == json.dumps(doc)
+    assert response.status == falcon.HTTP_200
 
 def test_search_nearby_city_out_of_range(client):
     response = client.simulate_get('/search/90/56')
