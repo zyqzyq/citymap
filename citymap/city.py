@@ -93,12 +93,11 @@ class SearchResource(object):
         resp.status = falcon.HTTP_200
 
     def search_geohash(self, east_longitude, north_latitude, bits=6):
-        # 打开数据库连接
         data = []
         geohash_source = geohash.encode(north_latitude, east_longitude, bits)
         # print geohash_source
         geohash_value_list = geohash.expand(geohash_source)
-        # geohash_value_list.append(geohash_source)
+        # 打开数据库连接
         db = MySQLdb.connect("localhost", "root", "root", "citydb")
         # 使用cursor()方法获取操作游标
         cursor = db.cursor()
@@ -180,10 +179,6 @@ class TSPResource(object):
         for i, key in enumerate(keys):
             value = self.conn.hgetall(key)
             for j in range(self.n):
-                # if float(value[str(j)])==0:
-                #     print "chushihua:",i,j,value["id"]
-                #     if i == j:
-                #         count_o+=1
                 old_i = int(value["id"])
                 self.matrix[old_i][j] = float(value[str(j)])
         # print count_o

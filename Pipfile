@@ -15,6 +15,7 @@ wheel = "*"
 redis = "*"
 geohash = "*"
 numpy = "*"
+pytest = "*"
 
 [requires]
 python_version = "2.7"
