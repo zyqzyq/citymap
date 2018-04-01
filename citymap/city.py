@@ -34,31 +34,6 @@ class CityResource(object):
     def __init__(self):
         self.pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
         self.conn = redis.Redis(connection_pool=self.pool)
-        self.init_redis()
-
-    def process_response(self, req, resp, resource, req_succeeded):
-        resp.set_header('Access-Control-Allow-Origin', '*')
-
-        if (req_succeeded
-                and req.method == 'OPTIONS'
-                and req.get_header('Access-Control-Request-Method')
-        ):
-            # NOTE(kgriffs): This is a CORS preflight request. Patch the
-            #   response accordingly.
-
-            allow = resp.get_header('Allow')
-            resp.delete_header('Allow')
-
-            allow_headers = req.get_header(
-                'Access-Control-Request-Headers',
-                default='*'
-            )
-
-            resp.set_headers((
-                ('Access-Control-Allow-Methods', allow),
-                ('Access-Control-Allow-Headers', allow_headers),
-                ('Access-Control-Max-Age', '86400'),  # 24 hours
-            ))
 
     def on_get(self, req, resp):
         resp.set_header('Access-Control-Allow-Origin', '*')  # 避免跨域问题
@@ -93,36 +68,6 @@ class CityResource(object):
             count = None
             next_page_url = None
         return city_list, count, next_page_url
-
-    def init_redis(self):
-        # 打开数据库连接
-        db = MySQLdb.connect("localhost", "root", "root", "citydb")
-        # 使用cursor()方法获取操作游标
-        cursor = db.cursor()
-        # SQL 插入语句
-        sql = "SELECT * FROM CITYLIST"
-        try:
-            # 执行sql语句
-            cursor.execute(sql)
-            # 提交到数据库执行
-            results = cursor.fetchall()
-            for i, result in enumerate(results):
-                # data = {"name": result[1], "value": [result[2], result[3]]}
-                self.conn.hset(name=result[1], key="east", value=result[2])
-                self.conn.hset(name=result[1], key="north", value=result[3])
-                self.conn.hset(name=result[1], key="id", value=i)
-                for j, other_result in enumerate(results):
-                    # if i == j :
-                    # print "dist:",geo_distance(result[2], result[3], other_result[2], other_result[3])
-                    self.conn.hset(name=result[1], key=str(j),
-                                   value=geo_distance(result[2], result[3], other_result[2], other_result[3]))
-                # self.conn.set(result[1], [result[2], result[3]])
-            # print self.data
-        except:
-            # 发生错误时回滚
-            print  "Error: unable to fecth data"
-        # 关闭数据库连接
-        db.close()
 
 
 class SearchResource(object):
