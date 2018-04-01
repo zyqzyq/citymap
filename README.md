@@ -6,7 +6,7 @@
 - 给予一个具体的经纬度点，在地图上构建该点到离该点最近的3个城市的最短路径
 - 给予两个经纬度的点（起点和终点），在地图上构建起点到终点的最短路径（即起点通向终点依次穿过地图上的城市，最终连接所有点形成一条路径，要求路径最短，且给出最短路径距离多少Km）
 
-[思路及代码片段](https://github.com/zyqzyq/citymap/blob/master/README.md)
+[思路及代码片段](https://github.com/zyqzyq/citymap/blob/master/snippet.md)
 
 # 进度
     实现falcon mysql redis存储数据
