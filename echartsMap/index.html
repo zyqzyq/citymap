@@ -79,7 +79,7 @@
             type: "get",
             url: page_url,
             dataType: "text",
-            async:false,
+//            async:true,
             success: function(data) {
 //                alert(data);    //这里会弹出json文件中所有的字符串数据，如图3-1
                 var d = eval("(" + data + ")");  // 将json字符串数据解析成对象
