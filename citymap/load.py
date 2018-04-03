@@ -78,6 +78,7 @@ def load_redis():
     # 打开数据库连接
     pool = redis.ConnectionPool(host='127.0.0.1', port=6379)
     conn = redis.Redis(connection_pool=pool)
+    conn.flushall()
     db = MySQLdb.connect("localhost", "root", "root", "citydb")
     # 使用cursor()方法获取操作游标
     cursor = db.cursor()
