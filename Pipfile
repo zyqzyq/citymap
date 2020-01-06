@@ -19,7 +19,7 @@ redis = "*"
 requests = "==2.18.4"
 six = "==1.11.0"
 "urllib3" = "==1.22"
-waitress = "==1.1.0"
+waitress = "==1.4.2"
 
 [requires]
 python_version = "2.7"
